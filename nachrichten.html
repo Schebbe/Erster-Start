@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nachrichten-Zeitmaschine | Tagesschau & FAZ Stil</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Playfair Display (FAZ-Stil) & Inter (Tagesschau-Stil) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        .font-faz { font-family: 'Playfair Display', Georgia, serif; }
+        .font-tagesschau { font-family: 'Inter', sans-serif; }
+        .bg-tagesschau-dark { background-color: #001a33; }
+        .bg-tagesschau-blue { background-color: #002d5a; }
+        .text-tagesschau-gold { color: #f0c243; }
+    </style>
+</head>
+<body class="bg-gray-100 font-tagesschau text-gray-900 min-h-screen flex flex-col">
+
+    <!-- ARD Tagesschau Header -->
+    <header class="bg-tagesschau-dark text-white border-b-4 border-[#002d5a] shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-[#002d5a] px-3 py-1 text-xs font-bold tracking-widest border border-blue-400 rounded-sm">ARD</div>
+                <h1 class="text-xl font-bold tracking-tight uppercase font-tagesschau flex items-center gap-1">
+                    tagesschau <span class="text-blue-400 font-light">zeitmaschine</span>
+                </h1>
+            </div>
+            
+            <!-- Datumsauswahl im deutschen Format -->
+            <div class="flex items-center gap-2 bg-tagesschau-blue p-1.5 rounded border border-blue-900 w-full sm:w-auto">
+                <label for="target-date" class="text-xs text-gray-300 font-semibold px-2 uppercase">Zeitreise:</label>
+                <input type="date" id="target-date" value="1989-11-09" 
+                       class="bg-white text-gray-900 px-3 py-1 rounded text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-400">
+                <button onclick="startZeitreise()" 
+                        class="bg-amber-500 hover:bg-amber-400 text-gray-900 font-bold px-4 py-1 rounded text-sm transition duration-200 cursor-pointer">
+                    Start
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sub-Header im FAZ-Stil -->
+    <div class="bg-white border-b border-gray-200 py-3 shadow-xs">
+        <div class="max-w-6xl mx-auto px-4 text-center sm:text-left">
+            <p class="font-faz italic text-xs tracking-wider text-gray-500">
+                Für Deutschland und die Welt · Amtliches Organ der historischen Rekonstruktion
+            </p>
+            <h2 id="display-date-headline" class="font-faz text-3xl sm:text-4xl font-bold mt-1 text-gray-900 border-b-2 border-black inline-block pb-1">
+                9. November 1989
+            </h2>
+        </div>
+    </div>
+
+    <!-- Hauptinhalt (Gegliedert nach Rubriken) -->
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
+        <div id="news-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Die Rubriken werden hier dynamisch per JavaScript eingefügt -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-tagesschau-dark text-gray-400 text-xs py-6 border-t border-gray-800 text-center">
+        <p class="font-faz italic mb-1 text-gray-300 text-sm">Frankfurter Allgemeine Zeitung trifft ARD Tagesschau</p>
+        <p>© 2026 Historisches Archiv-Simulationsmodul · Alle Daten historisch nachempfunden.</p>
+    </footer>
+
+    <!-- Logik-Skript für historische Daten & Visualisierung -->
+    <script>
+        // Historische Meilensteine als Datenbank
+        const historischeEvents = {
+            "1989-11-09": {
+                politik: ["Mauerfall in Berlin: Grenze nach 28 Jahren offen", "Schabowski verkündet fälschlicherweise sofortige Reiseregelung", "Massenansturm auf die Berliner Grenzübergänge"],
+                sport: ["DDR-Sportler blicken gespannt auf neue Reisefreiheiten", "Bundesliga plant Kooperationen mit Ost-Vereinen", "Vorbereitungen auf Olympia unter völlig neuen Vorzeichen"],
+                natur: ["Ungewöhnlich milder Novemberabend begünstigt Feiern auf der Mauer", "Umweltschützer fordern Sanierung der DDR-Industriegebiete", "Herbststürme über Norddeutschland flauen pünktlich ab"],
+                wissenschaft: ["DDR-Forscher hoffen auf das Ende der wissenschaftlichen Isolation", "Zuse-Computertechnologie im Fokus des Westens", "Medizinischer Austausch über den sterbenden Eisernen Vorhang"],
+                kultur: ["Rostropowitsch plant spontanes Cello-Konzert am Checkpoint Charlie", "Künstler der East Side Gallery besetzen erste Mauerabschnitte", "Theater in Ost und West spielen heute vor leeren Rängen – alle sind auf der Straße"]
+            },
+            "2001-09-11": {
+                politik: ["Terrorangriffe in den USA: World Trade Center eingestürzt", "Sicherheitsrat der Vereinten Nationen tritt zu Krisensitzung zusammen", "Bundesregierung erhöht Terrorwarnstufe für Deutschland drastisch"],
+                sport: ["Champions League Spiele am heutigen Abend offiziell abgesagt", "US-Sportligen pausieren den Spielbetrieb auf unbestimmte Zeit", "Formel 1 diskutiert über Absage des kommenden Grand Prix"],
+                natur: ["Strahlend blauer Himmel über New York wird von Rauchwolke verdeckt", "Erdbebenwarten registrieren den Einsturz der Zwillingstürme seismisch", "Tierschützer evakuieren hunderte Haustiere aus der Sperrzone"],
+                wissenschaft: ["Luftfahrtexperten fordern lückenlose Cockpit-Überwachung", "Satellitenbilder zeigen das Ausmaß der Zerstörung aus dem All", "Staubbelastung in Manhattan erreicht toxische Grenzwerte"],
+                kultur: ["Kultureller Stillstand: Broadways und Kinos weltweit schließen aus Trauer", "Konzerte abgesagt – Künstler solidarisieren sich mit Opfern", "Medienlandschaft im Dauereinsatz: Historische Sondersendungen brechen alle Rekorde"]
+            }
+        };
+
+        function formatDateGerman(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('de-DE', options);
+        }
+
+        function generateMockNews(dateString, category) {
+            const parts = dateString.split("-");
+            const year = parts[0];
+            const nameMap = {
+                politik: ["Globale Neuausrichtung verzeichnet Wendepunkt", "Bundestag debattiert über weitreichende Gesetzesänderung", "Internationale Gipfelgespräche bringen überraschende Einigung"],
+                sport: ["Überraschender Rekord bricht historische Bestmarke im Jahresrückblick", "Großes Turnier sorgt für emotionale Debatten unter den Fans", "Trainerwechsel nach enttäuschender Saison offiziell verkündet"],
+                natur: ["Meteorologen verzeichnen außergewöhnliche Wetterphänomene im Bundesgebiet", "Neues Naturschutzgebiet soll bedrohte Tierarten nachhaltig sichern", "Internationale Klimastudie warnt vor rasantem Wandel der Ökosysteme"],
+                wissenschaft: ["Wissenschaftliches Forschungsteam feiert medizinischen Durchbruch", "Neue Technologie-Trends revolutionieren die moderne Datenverarbeitung", "Erfolgreicher Start einer neuen unbemannten Weltraum-Mission"],
+                kultur: ["Großer Premieren-Erfolg begeistert Kritiker am gestrigen Abend", "Renommierter Literaturpreis geht überraschend an Newcomer", "Historisches Kulturerbe soll mit Millionenaufwand saniert werden"]
+            };
+            return nameMap[category] || ["Nachrichten für dieses Datum werden rekonstruiert...", "Analysen im Inland halten an.", "Hintergründe folgen in Kürze."];
+        }
+
+        function startZeitreise() {
+            const dateInput = document.getElementById("target-date").value;
+            if (!dateInput) return;
+
+            document.getElementById("display-date-headline").innerText = formatDateGerman(dateInput);
+
+            const data = historischeEvents[dateInput] || {
+                politik: generateMockNews(dateInput, "politik"),
+                sport: generateMockNews(dateInput, "sport"),
+                natur: generateMockNews(dateInput, "natur"),
+                wissenschaft: generateMockNews(dateInput, "wissenschaft"),
+                kultur: generateMockNews(dateInput, "kultur")
+            };
+
+            renderNews(data);
+        }
+
+        function renderNews(data) {
+            const grid = document.getElementById("news-grid");
+            grid.innerHTML = "";
+
+            const rubriken = [
+                { id: "politik", name: "Politik", query: "politics" },
+                { id: "sport", name: "Sport", query: "stadium" },
+                { id: "natur", name: "Natur & Umwelt", query: "nature" },
+                { id: "wissenschaft", name: "Wissenschaft", query: "science" },
+                { id: "kultur", name: "Kultur & Medien", query: "theater" }
+            ];
+
+            rubriken.forEach(rubrik => {
+                const headlines = data[rubrik.id];
+                const seed = Math.floor(Math.random() * 1000);
+                const imageUrl = `https://picsum.photos/seed/${rubrik.id}-${seed}/400/250`;
+
+                const card = document.createElement("section");
+                card.className = "bg-white border border-gray-200 shadow-xs rounded-xs overflow-hidden flex flex-col";
+
+                card.innerHTML = `
+                    <div class="relative">
+                        <img src="${imageUrl}" alt="Symbolbild zu ${rubrik.name}" class="w-full h-40 object-cover bg-gray-200">
+                        <span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-sm tracking-widest">LIVE</span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col">
+                        <h3 class="font-tagesschau text-lg font-bold uppercase tracking-wide text-gray-900 border-b-2 border-amber-500 inline-block pb-1 mb-1">${rubrik.name}</h3>
+                        <p class="font-faz italic text-xs text-gray-400 mb-3">Bild des Tages &middot; Symbolbild</p>
+                        <ul class="space-y-2 text-sm text-gray-800 list-disc list-inside flex-1">
+                            ${headlines.map(headline => `
+                            <li>
+                                <a href="https://www.google.com/search?q=${encodeURIComponent(headline)}" target="_blank" rel="noopener noreferrer" class="hover:text-blue-700 hover:underline">${headline}</a>
+                            </li>`).join("")}
+                        </ul>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        window.onload = function() {
+            startZeitreise();
+        };
+    </script>
+</body>
+</html>
